@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "365527669987",
+    "project_id": "diploma-296c5",
+    "storage_bucket": "diploma-296c5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365527669987:android:69a243f298839aee86f9d6",
+        "android_client_info": {
+          "package_name": "com.moon.diplomaapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "365527669987-08rcdq0e4krfp9nkflpe1grdqohgdu0g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_XXnKyqwhC-YXLmb5kyar2BiBd9JKk9Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "365527669987-08rcdq0e4krfp9nkflpe1grdqohgdu0g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "365527669987-pfqdo311t7a0gc9mr5hu9kkh1itq50h7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.moon.diplomaapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
