@@ -1,5 +1,7 @@
+import 'package:diplom_app/common/QRScanner.dart';
 import 'package:diplom_app/pages/AuthPage.dart';
 import 'package:diplom_app/pages/HomePage.dart';
+import 'package:diplom_app/patients/PatientsView.dart';
 import 'package:diplom_app/services/Backend.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -7,7 +9,10 @@ import 'package:flutter/material.dart';
 
 final routes = {
   '/auth': (context) => AuthPage(),
-  '/home': (context) => HomePage()
+  '/home': (context) => HomePage(),
+  '/qrscanner': (context) => QRScanner(),
+  '/patients': (context) => PatientsView(),
+  '/doctors': (context) => PatientsView.doctors()
 };
 
 void main() async {

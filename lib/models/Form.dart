@@ -1,11 +1,14 @@
+import 'package:diplom_app/models/FormSchema.dart';
+
 class FormModel {
-  FormModel(this.id, this.name, this.schema);
+  FormModel({this.id, this.name, this.schema});
   String id;
   String name;
-  List<dynamic> schema;
+  List<FormSchema> schema;
 
   FormModel.fromJSON(Map<String, dynamic> data)
-      : id = data['_id'],
-        name = data['name'],
-        schema = data['schema'];
+      : this.id = data['_id'],
+        this.name = data['name'],
+        this.schema = List<FormSchema>.from(
+            data['schema'].map((x) => FormSchema.fromJSON(x)));
 }

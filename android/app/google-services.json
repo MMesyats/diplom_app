@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "365527669987-59blf2n8pumlgb7rmicbbma6j56efna6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moon.diplomaapp",
+            "certificate_hash": "19c72d2f2744ddb18b7a0a25dcdedb78c688a450"
+          }
+        },
+        {
+          "client_id": "365527669987-isb8n2oj280e6o5spbdronnoj8bp3b6s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moon.diplomaapp",
+            "certificate_hash": "bfd8179311b28b612dd792d4f2b97babae925658"
+          }
+        },
+        {
           "client_id": "365527669987-08rcdq0e4krfp9nkflpe1grdqohgdu0g.apps.googleusercontent.com",
           "client_type": 3
         }

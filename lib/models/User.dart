@@ -29,7 +29,8 @@ class User {
         this.bloodType = data['bloodType'],
         this.height = data['height'],
         this.weight = data['weight'],
-        this.id = data['_id'];
+        this.id = data['_id'],
+        this.isDoctor = data['isDoctor'];
 
   Map<String, dynamic> toJson() => ({
         "name": this.name,
