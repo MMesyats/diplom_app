@@ -1,9 +1,14 @@
+import 'package:diplom_app/common/FormGenerator.dart';
 import 'package:diplom_app/home/NoteItem.dart';
+import 'package:diplom_app/models/NoteModel.dart';
+import 'package:diplom_app/services/Backend.dart';
 import 'package:flutter/material.dart';
 
+import '../models/User.dart';
+
 class NoteList extends StatefulWidget {
-  NoteList({Key key}) : super(key: key);
-  final searchInput = TextEditingController();
+  final User user;
+  NoteList({this.user});
 
   @override
   _NoteListState createState() => _NoteListState();
@@ -17,6 +22,7 @@ class SortModel {
 }
 
 class _NoteListState extends State<NoteList> {
+  final searchInput = TextEditingController();
   final _padding = EdgeInsets.all(15);
   final _margin = EdgeInsets.only(bottom: 45);
 
@@ -50,111 +56,132 @@ class _NoteListState extends State<NoteList> {
   _submitTags(String value) {
     setState(() {
       tags = value.trim().split(" ");
+      print(tags);
     });
-    print(tags);
   }
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width - 35;
-    return ListView(
-      children: [
-        Container(
-          padding: _padding,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                margin: _margin,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: width * 0.6,
-                      padding: EdgeInsets.only(left: 15),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: _radius,
-                          boxShadow: [_shadow]),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: width * 0.6 - 65,
-                            child: TextField(
-                              controller: widget.searchInput,
-                              decoration: InputDecoration(
-                                  hintText: "Пошук", border: InputBorder.none),
-                            ),
+    return SingleChildScrollView(
+      child: Container(
+        padding: _padding,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              margin: _margin,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: width * 0.6,
+                    padding: EdgeInsets.only(left: 15),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: _radius,
+                        boxShadow: [_shadow]),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: width * 0.6 - 65,
+                          child: TextField(
+                            controller: searchInput,
+                            decoration: InputDecoration(
+                                hintText: "Пошук", border: InputBorder.none),
                           ),
-                          IconButton(
-                              icon: Icon(
-                                Icons.search,
-                                size: 20,
-                              ),
-                              onPressed: () {
-                                _submitTags(widget.searchInput.text);
-                              })
-                        ],
-                      ),
+                        ),
+                        IconButton(
+                            icon: Icon(
+                              Icons.search,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              _submitTags(searchInput.text);
+                            })
+                      ],
                     ),
-                    Container(
-                      width: width * 0.4,
-                      padding: EdgeInsets.only(left: 15),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: _radius,
-                          boxShadow: [_shadow]),
-                      child: DropdownButton(
-                          hint: Text("Сортувати"),
-                          value: sortValue,
-                          onChanged: _changeSort,
-                          isExpanded: true,
-                          underline: Container(),
-                          items: items
-                              .map((e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Row(
-                                    children: [
-                                      Text(e.label),
-                                      Icon(
-                                        e.order == 1
-                                            ? (Icons.arrow_upward)
-                                            : (Icons.arrow_downward),
-                                        size: 15,
-                                      )
-                                    ],
-                                  )))
-                              .toList()),
-                    )
-                  ],
-                ),
-              ),
-              NoteItem(
-                title: "test",
-                tags: [
-                  'test',
-                  'testtestset',
-                  'testsetst',
-                  'test1231',
-                  'test',
-                  'test'
+                  ),
+                  Container(
+                    width: width * 0.4,
+                    padding: EdgeInsets.only(left: 15),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: _radius,
+                        boxShadow: [_shadow]),
+                    child: DropdownButton(
+                        hint: Text("Сортувати"),
+                        value: sortValue,
+                        onChanged: _changeSort,
+                        isExpanded: true,
+                        underline: Container(),
+                        items: items
+                            .map((e) => DropdownMenuItem(
+                                value: e,
+                                child: Row(
+                                  children: [
+                                    Text(e.label),
+                                    Icon(
+                                      e.order == 1
+                                          ? (Icons.arrow_upward)
+                                          : (Icons.arrow_downward),
+                                      size: 15,
+                                    )
+                                  ],
+                                )))
+                            .toList()),
+                  )
                 ],
               ),
-              NoteItem(
-                title: "test",
-                tags: [
-                  'test',
-                  'testtestset',
-                  'testsetst',
-                  'test1231',
-                  'test',
-                  'test'
-                ],
-              )
-            ],
-          ),
+            ),
+            FutureBuilder<List<NoteModel>>(
+                future: widget.user != null
+                    ? Backend.getPatientNotes(widget.user.id,
+                        orderField: sortValue != null ? sortValue.value : '',
+                        orderType:
+                            sortValue != null ? sortValue.order.toString() : '',
+                        tags: tags.isNotEmpty ? tags.join(';') : '')
+                    : Backend.getNotes(
+                        orderField: sortValue != null ? sortValue.value : '',
+                        orderType:
+                            sortValue != null ? sortValue.order.toString() : '',
+                        tags: tags.isNotEmpty ? tags.join(';') : ''),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data != null)
+                    return ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              NoteItem(
+                                date: snapshot.data[index].note.date,
+                                tags: snapshot.data[index].note.tags.toList(),
+                                title: snapshot.data[index].note.name,
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => FormGenerator(
+                                                update: true,
+                                                userId: widget.user != null
+                                                    ? widget.user.id
+                                                    : null,
+                                                noteModel: snapshot.data[index],
+                                              ))).then((_) => setState(() {}));
+                                },
+                              ),
+                            ],
+                          );
+                        });
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                })
+          ],
         ),
-      ],
+      ),
     );
   }
 }
