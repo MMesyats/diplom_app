@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "365527669987-6vtoe87s1i1j7vfq4n6j6hhpe6irqv7u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moon.diplomaapp",
+            "certificate_hash": "8979b022ddc08e8e506659e9c4b1a32fa48cc45c"
+          }
+        },
+        {
           "client_id": "365527669987-isb8n2oj280e6o5spbdronnoj8bp3b6s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

@@ -9,7 +9,6 @@ import '../models/User.dart';
 class NoteList extends StatefulWidget {
   final User user;
   NoteList({this.user});
-  final searchInput = TextEditingController();
 
   @override
   _NoteListState createState() => _NoteListState();
@@ -23,6 +22,7 @@ class SortModel {
 }
 
 class _NoteListState extends State<NoteList> {
+  final searchInput = TextEditingController();
   final _padding = EdgeInsets.all(15);
   final _margin = EdgeInsets.only(bottom: 45);
 
@@ -56,6 +56,7 @@ class _NoteListState extends State<NoteList> {
   _submitTags(String value) {
     setState(() {
       tags = value.trim().split(" ");
+      print(tags);
     });
   }
 
@@ -85,7 +86,7 @@ class _NoteListState extends State<NoteList> {
                         Container(
                           width: width * 0.6 - 65,
                           child: TextField(
-                            controller: widget.searchInput,
+                            controller: searchInput,
                             decoration: InputDecoration(
                                 hintText: "Пошук", border: InputBorder.none),
                           ),
@@ -96,7 +97,7 @@ class _NoteListState extends State<NoteList> {
                               size: 20,
                             ),
                             onPressed: () {
-                              _submitTags(widget.searchInput.text);
+                              _submitTags(searchInput.text);
                             })
                       ],
                     ),
@@ -135,8 +136,16 @@ class _NoteListState extends State<NoteList> {
             ),
             FutureBuilder<List<NoteModel>>(
                 future: widget.user != null
-                    ? Backend.getPatientNotes(widget.user.id)
-                    : Backend.getNotes(),
+                    ? Backend.getPatientNotes(widget.user.id,
+                        orderField: sortValue != null ? sortValue.value : '',
+                        orderType:
+                            sortValue != null ? sortValue.order.toString() : '',
+                        tags: tags.isNotEmpty ? tags.join(';') : '')
+                    : Backend.getNotes(
+                        orderField: sortValue != null ? sortValue.value : '',
+                        orderType:
+                            sortValue != null ? sortValue.order.toString() : '',
+                        tags: tags.isNotEmpty ? tags.join(';') : ''),
                 builder: (context, snapshot) {
                   if (snapshot.hasData && snapshot.data != null)
                     return ListView.builder(
@@ -155,6 +164,10 @@ class _NoteListState extends State<NoteList> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => FormGenerator(
+                                                update: true,
+                                                userId: widget.user != null
+                                                    ? widget.user.id
+                                                    : null,
                                                 noteModel: snapshot.data[index],
                                               ))).then((_) => setState(() {}));
                                 },

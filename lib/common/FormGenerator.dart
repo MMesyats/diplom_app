@@ -12,7 +12,8 @@ import 'package:image_picker/image_picker.dart';
 class FormGenerator extends StatefulWidget {
   final NoteModel noteModel;
   final String userId;
-  FormGenerator({this.noteModel, this.userId});
+  final bool update;
+  FormGenerator({this.noteModel, this.userId = null, this.update = false});
   @override
   _FormGeneratorState createState() => _FormGeneratorState();
 }
@@ -95,12 +96,11 @@ class _FormGeneratorState extends State<FormGenerator> {
   void tagsListener() {
     if (_tagsController.text.endsWith(' ')) {
       String tagText = _tagsController.text;
+
+      setState(() {
+        _tags.add(tagText.trim());
+      });
       _tagsController.clear();
-      if (tagText != ' ') {
-        setState(() {
-          _tags.add(tagText);
-        });
-      }
     }
   }
 
@@ -122,6 +122,27 @@ class _FormGeneratorState extends State<FormGenerator> {
         _fileLabel,
         id: widget.userId);
     Navigator.of(context)..pop()..pop();
+  }
+
+  void _updateData() async {
+    await Backend.updateNote(
+        Note(
+            id: widget.noteModel.note.id,
+            date: selectedDate,
+            form: widget.noteModel.form.id,
+            name: _nameController.text,
+            tags: _tags,
+            fields: _controllers.entries
+                .map((e) => Field(
+                    label: e.key,
+                    value: e.value is TextEditingController
+                        ? e.value.text
+                        : e.value))
+                .toList()),
+        _image,
+        _fileLabel,
+        id: widget.userId);
+    Navigator.of(context).pop();
   }
 
   _putField(int index) {
@@ -190,17 +211,24 @@ class _FormGeneratorState extends State<FormGenerator> {
     if (widget.noteModel.note != null) {
       _tags.addAll(widget.noteModel.note.tags);
     }
+    widget.noteModel.note != null
+        ? _nameController.text = widget.noteModel.note.name
+        : _nameController.text = widget.noteModel.form.name;
+
     initSchema();
     initControllers();
 
     _tagsController.addListener(tagsListener);
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return CommonScaffold(
-      title: widget.noteModel.form.name,
+      title: widget.noteModel.note != null
+          ? widget.noteModel.note.name
+          : widget.noteModel.form.name,
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
         child: Form(
@@ -212,8 +240,7 @@ class _FormGeneratorState extends State<FormGenerator> {
                   padding: _fieldPadding,
                   child: TextFormField(
                     keyboardType: TextInputType.text,
-                    controller: _nameController
-                      ..text = widget.noteModel.form.name,
+                    controller: _nameController,
                     decoration: InputDecoration(
                         hintText: 'Название формы', hintStyle: _hintStyle),
                   ),
@@ -272,8 +299,8 @@ class _FormGeneratorState extends State<FormGenerator> {
                   ),
                 ),
                 SendButton(
-                  title: 'Зберегти',
-                  onPressed: _sendData,
+                  title: widget.update ? 'Обновить' : 'Зберегти',
+                  onPressed: widget.update ? _updateData : _sendData,
                 )
               ],
             ),

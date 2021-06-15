@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
           showDialog(
               context: context,
               builder: (_) => AddNoteDialog(
-                    userId: widget.user.id,
+                    userId: widget.user != null ? widget.user.id : null,
                   )).then((value) => setState(() {}));
         },
       ),

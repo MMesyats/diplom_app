@@ -5,13 +5,7 @@ Note noteFromJson(String str) => Note.fromJson(json.decode(str));
 String noteToJson(Note data) => json.encode(data.toJson());
 
 class Note {
-  Note({
-    this.name,
-    this.tags,
-    this.fields,
-    this.form,
-    this.date,
-  });
+  Note({this.name, this.tags, this.fields, this.form, this.date, this.id});
 
   String id;
   String name;
@@ -35,7 +29,7 @@ class Note {
         "fields": List<dynamic>.from(this.fields.map((x) => x.toJson())),
         "form": this.form,
         "created_at": this.date.toIso8601String() + "Z",
-        if (this.id != null) "_id": this.id
+        if (this.id != null) "id": this.id
       };
 }
 
